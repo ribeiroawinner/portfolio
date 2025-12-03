@@ -61,6 +61,7 @@ a:hover {
     font-size: 1.2rem;
     letter-spacing: -0.02em;
     text-transform: uppercase;
+    font-style: italic;
 }
 
 .nav {
@@ -628,6 +629,7 @@ a:hover {
     }
 
     .footer-left,
+    .footer-center,
     .footer-right {
         justify-self: center;
     }
@@ -644,5 +646,14 @@ a:hover {
     .profile-photo-wrapper {
         width: 150px;
         height: 150px;
+    }
+
+    .hero,
+    .about,
+    .portfolio,
+    .features,
+    .clients,
+    .cta {
+        background: radial-gradient(ellipse 1000px 400px at center, #121212 0%, #050505 60%);
     }
 }
