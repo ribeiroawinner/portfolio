@@ -78,6 +78,52 @@ a:hover {
     color: var(--text-color);
 }
 
+/* Availability Badge - Floating */
+.availability-badge {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #00ff88;
+    border-radius: 50%;
+    animation: fadeInOut 2s ease-in-out infinite;
+    box-shadow: 0 0 8px #00ff88, 0 0 12px #00ff88;
+}
+
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.3;
+        transform: scale(0.9);
+    }
+}
+
+.availability-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
 /* Hero */
 .hero {
     height: 100vh;
@@ -210,9 +256,54 @@ a:hover {
 }
 
 .about-content {
-    max-width: 700px;
+    max-width: 800px;
     margin: 0 auto;
     text-align: center;
+}
+
+.about-profile {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #ffffff 0%, #666666 50%, #ffffff 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+    transition: transform 0.3s ease;
+}
+
+.profile-photo-wrapper:hover {
+    transform: scale(1.05);
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.profile-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid var(--bg-color);
 }
 
 .about-title {
@@ -226,13 +317,23 @@ a:hover {
     color: var(--text-muted);
     font-size: 1.1rem;
     line-height: 1.8;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.about-text:last-child {
     margin-bottom: 0;
+}
+
+.about-text strong {
+    color: var(--text-color);
+    font-weight: 600;
 }
 
 /* Portfolio */
 .portfolio {
     padding: 100px 0;
-    background: radial-gradient(ellipse 1200px 400px at top, #0f0f0f 0%, #050505 50%);
+    background: radial-gradient(ellipse 1000px 400px at center, #121212 0%, #050505 60%);
     border-bottom: 0.5px solid rgb(23 23 23);
 }
 
@@ -342,39 +443,10 @@ a:hover {
     color: var(--text-muted);
 }
 
-/* Stats */
-.stats {
-    padding: 80px 0;
-    background: radial-gradient(ellipse 900px 500px at center, #121212 0%, #0a0a0a 60%);
-    border-bottom: 0.5px solid rgb(23 23 23);
-}
-
-.stats-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 3rem;
-    font-weight: 800;
-    color: var(--text-color);
-    margin-bottom: 8px;
-    line-height: 1;
-}
-
-.stat-label {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
 /* Features */
 .features {
     padding: 120px 0;
-    background: radial-gradient(ellipse 1200px 400px at bottom, #0f0f0f 0%, #050505 50%);
+    background: radial-gradient(ellipse 1000px 400px at center, #121212 0%, #050505 60%);
     border-bottom: 0.5px solid rgb(23 23 23);
 }
 
@@ -416,7 +488,7 @@ a:hover {
 /* Clients */
 .clients {
     padding: 60px 0;
-    background: radial-gradient(ellipse 800px 300px at center, #121212 0%, #0a0a0a 60%);
+    background: radial-gradient(ellipse 1000px 400px at center, #121212 0%, #050505 60%);
     border-bottom: 0.5px solid rgb(23 23 23);
     text-align: center;
 }
@@ -454,7 +526,7 @@ a:hover {
 .cta {
     padding: 160px 0;
     text-align: center;
-    background: radial-gradient(ellipse 600px 400px at center, #1a1a1a 0%, #050505 70%);
+    background: radial-gradient(ellipse 1000px 400px at center, #121212 0%, #050505 60%);
     border-bottom: 0.5px solid rgb(23 23 23);
 }
 
@@ -525,6 +597,16 @@ a:hover {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .availability-badge {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 16px;
+    }
+
+    .availability-text {
+        font-size: 0.85rem;
+    }
+
     .hero-title {
         font-size: 2.5rem;
     }
@@ -556,5 +638,11 @@ a:hover {
 
     .about-text {
         font-size: 1rem;
+        text-align: center;
+    }
+
+    .profile-photo-wrapper {
+        width: 150px;
+        height: 150px;
     }
 }
