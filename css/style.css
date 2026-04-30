@@ -207,7 +207,7 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     text-align: center;
     padding: 34px 24px 34px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .hero::before {
@@ -262,6 +262,65 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     border-radius: 18px;
     overflow: hidden;
     background: #060606;
+}
+
+.shorts {
+    padding: 68px 20px;
+    text-align: center;
+}
+
+.shorts-container {
+    max-width: 980px;
+}
+
+.shorts-title {
+    font-size: clamp(1.65rem, 3.2vw + 0.35rem, 2.4rem);
+    line-height: 1.15;
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.shorts-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.short-card {
+    display: block;
+    text-decoration: none;
+    grid-column: span 2;
+}
+
+.short-card:nth-child(4) {
+    grid-column: 2 / span 2;
+}
+
+.short-card:nth-child(5) {
+    grid-column: 4 / span 2;
+}
+
+.short-thumb {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: 14px;
+    border: 1px solid #2b2b2b;
+    background-image:
+        linear-gradient(160deg, rgba(55, 55, 55, 0.34), rgba(0, 0, 0, 0.84)),
+        radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.16), transparent 48%),
+        radial-gradient(circle at 72% 75%, rgba(255, 255, 255, 0.08), transparent 42%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, filter 0.3s ease, border-color 0.3s ease;
+}
+
+.short-card:hover .short-thumb {
+    transform: translateY(-2px) scale(1.02);
+    filter: brightness(1.06);
+    border-color: #3a3a3a;
 }
 
 .hero-video-card {
@@ -584,17 +643,25 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     border-color: #2a2a2a;
 }
 .play-button {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.12);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 64px;
+    height: 64px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #fff;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    transition: transform 0.3s, background 0.3s;
+    color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.play-button svg {
+    width: 20px;
+    height: 20px;
+    transform: translateX(1px);
 }
 .portfolio-item:hover .play-button { transform: scale(1.1); }
 .video-info h4 { font-weight: 400; }
@@ -685,10 +752,6 @@ section::after {
     height: 40px;
     background-color: #1a1a1a;
     z-index: -1;
-}
-
-.cta::after {
-    display: none;
 }
 
 /* --- ACCORDION SECTION --- */
@@ -937,6 +1000,21 @@ section::after {
     .hero-videos {
         grid-template-columns: 1fr;
         border-radius: 14px;
+    }
+
+    .shorts {
+        padding: 36px max(14px, env(safe-area-inset-right, 0px)) 36px max(14px, env(safe-area-inset-left, 0px));
+    }
+
+    .shorts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .short-card,
+    .short-card:nth-child(4),
+    .short-card:nth-child(5) {
+        grid-column: auto;
     }
 
     .hero-video-card + .hero-video-card {
