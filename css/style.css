@@ -254,7 +254,7 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
 
 .hero-videos {
     width: 100%;
-    max-width: 900px;
+    max-width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0;
@@ -270,7 +270,7 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
 }
 
 .shorts-container {
-    max-width: 980px;
+    max-width: 100%;
 }
 
 .shorts-title {
@@ -284,7 +284,7 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 12px;
-    max-width: 720px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
@@ -569,11 +569,11 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
 
 /* Grid no próprio container: título na linha inteira, clientes nas colunas */
 .works .container {
-    max-width: 940px;
+    max-width: 100%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    gap: 26px;
     align-items: start;
     justify-items: center;
 }
@@ -591,12 +591,12 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 16px;
 }
 
 .work-avatar {
-    width: 128px;
-    height: 128px;
+    width: 144px;
+    height: 144px;
     border-radius: 50%;
     object-fit: cover;
     background: #1a1a1a;
@@ -682,13 +682,28 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
     line-height: 1.15;
     padding-inline: 4px;
 }
-.cta p { margin-bottom: 40px; }
+.cta p {
+    margin-bottom: 40px;
+    font-size: clamp(1.05rem, 1.2vw + 0.9rem, 1.2rem);
+    line-height: 1.55;
+}
 .cta-note {
     display: block;
-    margin-top: 15px;
-    font-size: 0.9rem;
+    margin-top: 18px;
+    font-size: 1rem;
     color: #ffffff;
     text-decoration: underline;
+}
+
+.cta .btn {
+    font-size: 1.05rem;
+    padding: 14px 32px;
+    min-height: 48px;
+}
+
+.cta .btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .footer-center { margin-bottom: 36px; }
@@ -822,7 +837,7 @@ section::after {
 .accordion-content p {
     padding-bottom: 35px;
     color: #bbbbbb; /* Cinza suave */
-    font-size: 1.05rem;
+    font-size: 1.125rem;
     max-width: 800px;
     margin: 0 auto;
     line-height: 1.7;
@@ -967,12 +982,12 @@ section::after {
 
     .works .container {
         grid-template-columns: 1fr;
-        gap: 18px;
+        gap: 20px;
     }
 
     .work-avatar {
-        width: 108px;
-        height: 108px;
+        width: 118px;
+        height: 118px;
     }
     
     /* Primeira “cápsula” (hero) abaixo do header em duas linhas + notch */
@@ -1056,7 +1071,7 @@ section::after {
         padding: 0 max(14px, env(safe-area-inset-left, 0px)) 0 max(14px, env(safe-area-inset-right, 0px));
     }
     .accordion-content p {
-        font-size: 0.98rem;
+        font-size: 1.05rem;
         padding-bottom: 28px;
     }
 
