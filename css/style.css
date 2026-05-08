@@ -1017,6 +1017,12 @@ section::after {
         grid-column: auto;
     }
 
+    .shorts-grid > .short-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        width: min(100%, calc(50% - 5px));
+        justify-self: center;
+    }
+
     .hero-video-card + .hero-video-card {
         border-left: none;
         border-top: 1px solid #202020;
