@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "cta.subtitle": "Quality, deadlines, and results. Request a proposal and start now.",
             "cta.button": "Request a Quote",
             "cta.note": "Reply within 24h.",
-            "footer.copyright": "© WIN. All rights reserved.",
+            "footer.copyright": "© Win. All rights reserved.",
             "badge.text": "Open for commissions",
             "accordion.header": "About me",
             "accordion.content":
