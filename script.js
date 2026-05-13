@@ -56,9 +56,17 @@ document.addEventListener("DOMContentLoaded", () => {
             void shortEmbedRoot.offsetWidth;
 
             const mountIframe = () => {
+                const rect = shortEmbedRoot.getBoundingClientRect();
+                const w = Math.max(1, Math.round(rect.width));
+                const h = Math.max(1, Math.round(rect.height));
+
                 const iframe = document.createElement("iframe");
                 iframe.title = "YouTube Short portfolio 1";
                 iframe.loading = "eager";
+                iframe.width = w;
+                iframe.height = h;
+                iframe.style.width = `${w}px`;
+                iframe.style.height = `${h}px`;
                 iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(shortId)}?rel=0&iv_load_policy=3&modestbranding=1&autoplay=1`;
                 iframe.setAttribute(
                     "allow",
