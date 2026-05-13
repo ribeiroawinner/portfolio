@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 iframe.loading = "eager";
                 /* Tamanho só via CSS (9:16 no .shorts-video-container); pixels fixos aqui
                    costumam gerar letterbox extra no player do YouTube. */
-                iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&autoplay=1`;
+                /* mute=1: autoplay sem mute é bloqueado na maior parte dos browsers e deixa o player num estado estranho */
+                iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&autoplay=1&mute=1`;
                 iframe.setAttribute(
                     "allow",
                     "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
