@@ -339,11 +339,13 @@ h1, h2, h3, h4, h5, h6 { color: #ffffff; }
 
 .shorts-video-container iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
+    /* Leve zoom + deslocamento para recortar a faixa/gradiente do topo do player embutido */
+    transform: translateY(-1.6%) scale(1.055);
+    transform-origin: center center;
 }
 
 .shorts-video-container:hover {
@@ -1081,21 +1083,16 @@ section::after {
         padding: 36px max(14px, env(safe-area-inset-right, 0px)) 36px max(14px, env(safe-area-inset-left, 0px));
     }
 
+    /* Shorts (formato vertical) em fila única, como os embeds YouTube 16:9 no hero */
     .shorts-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        grid-template-columns: 1fr;
+        gap: 14px;
     }
 
     .short-card,
     .short-card:nth-child(4),
     .short-card:nth-child(5) {
         grid-column: auto;
-    }
-
-    .shorts-grid > .short-card:last-child:nth-child(odd) {
-        grid-column: 1 / -1;
-        width: min(100%, calc(50% - 5px));
-        justify-self: center;
     }
 
     .hero-video-card + .hero-video-card {
