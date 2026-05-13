@@ -53,21 +53,43 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         shortLoadBtn.addEventListener("click", () => {
             shortLoadBtn.remove();
-            void shortEmbedRoot.offsetWidth;
             const wrap = document.createElement("div");
             wrap.className = "short-video-iframe-wrap";
-            const iframe = document.createElement("iframe");
-            iframe.title = "YouTube Short portfolio 1";
-            iframe.loading = "eager";
-            iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
-            iframe.setAttribute(
-                "allow",
-                "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            );
-            iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-            iframe.allowFullscreen = true;
-            wrap.appendChild(iframe);
             shortEmbedRoot.appendChild(wrap);
+
+            const mountIframe = () => {
+                const rect = shortEmbedRoot.getBoundingClientRect();
+                const w = Math.max(1, Math.round(rect.width));
+                const h = Math.max(1, Math.round(rect.height));
+
+                const iframe = document.createElement("iframe");
+                iframe.title = "YouTube Short portfolio 1";
+                iframe.loading = "eager";
+                iframe.width = w;
+                iframe.height = h;
+                iframe.style.position = "absolute";
+                iframe.style.top = "0";
+                iframe.style.left = "0";
+                iframe.style.width = `${w}px`;
+                iframe.style.height = `${h}px`;
+                iframe.style.aspectRatio = "9 / 16";
+                iframe.style.border = "0";
+                iframe.style.boxSizing = "border-box";
+
+                iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
+                iframe.setAttribute(
+                    "allow",
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                );
+                iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+                iframe.allowFullscreen = true;
+                wrap.appendChild(iframe);
+            };
+
+            void shortEmbedRoot.offsetWidth;
+            requestAnimationFrame(() => {
+                requestAnimationFrame(mountIframe);
+            });
         });
     }
 
