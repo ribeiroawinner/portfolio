@@ -15,7 +15,89 @@ function youtubeVideoIdFromDataShort(raw) {
     return "";
 }
 
+/** Volume inicial (0–100); só funciona via IFrame API, não por parâmetros da URL. */
+const YT_EMBED_VOLUME = 50;
+
+const YT_SHARED_PLAYER_VARS = {
+    playsinline: 1,
+    rel: 0,
+    modestbranding: 1,
+    iv_load_policy: 3,
+    enablejsapi: 1
+};
+
+function youtubePlayerVarsBase() {
+    const v = { ...YT_SHARED_PLAYER_VARS };
+    if (typeof location !== "undefined" && location.origin && location.protocol !== "file:") {
+        v.origin = location.origin;
+    }
+    return v;
+}
+
+function setYoutubePlayerVolume(player) {
+    try {
+        if (player && typeof player.setVolume === "function") {
+            player.setVolume(YT_EMBED_VOLUME);
+        }
+    } catch (_) {
+        /* embed pode recusar em alguns contextos */
+    }
+}
+
+function initHeroYoutubePlayers() {
+    if (typeof YT === "undefined" || !YT.Player) return;
+    document.querySelectorAll(".hero-yt-embed[data-video-id]").forEach((el) => {
+        if (el.getAttribute("data-yt-inited") === "1") return;
+        const videoId = el.getAttribute("data-video-id");
+        const elId = el.id;
+        if (!videoId || !elId) return;
+        el.setAttribute("data-yt-inited", "1");
+        new YT.Player(elId, {
+            host: "https://www.youtube-nocookie.com",
+            videoId,
+            width: "100%",
+            height: "100%",
+            playerVars: youtubePlayerVarsBase(),
+            events: {
+                onReady: (ev) => setYoutubePlayerVolume(ev.target)
+            }
+        });
+    });
+}
+
+const youtubeEmbedReadyQueue = [];
+
+function runYoutubeEmbedReadyCallbacks() {
+    initHeroYoutubePlayers();
+    while (youtubeEmbedReadyQueue.length) {
+        const fn = youtubeEmbedReadyQueue.shift();
+        try {
+            fn();
+        } catch (_) {}
+    }
+}
+
+function whenYoutubeIframeApiReady(fn) {
+    if (typeof YT !== "undefined" && YT && YT.Player) {
+        fn();
+        return;
+    }
+    youtubeEmbedReadyQueue.push(fn);
+}
+
+const previousOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
+window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
+    if (typeof previousOnYouTubeIframeAPIReady === "function") {
+        previousOnYouTubeIframeAPIReady();
+    }
+    runYoutubeEmbedReadyCallbacks();
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+    if (typeof YT !== "undefined" && YT && YT.Player) {
+        initHeroYoutubePlayers();
+    }
+
     const i18n = {
         en: {
             "hero.role": "Video editor for YouTubers!",
@@ -71,26 +153,30 @@ document.addEventListener("DOMContentLoaded", () => {
             shortLoadBtn.remove();
             void shortEmbedRoot.offsetWidth;
 
-            const mountIframe = () => {
-                const iframe = document.createElement("iframe");
-                iframe.title = "YouTube Short portfolio 1";
-                iframe.loading = "eager";
-                /* Tamanho só via CSS (9:16 no .shorts-video-container); pixels fixos aqui
-                   costumam gerar letterbox extra no player do YouTube. */
-                /* mute=1: autoplay sem mute é bloqueado na maior parte dos browsers e deixa o player num estado estranho */
-                iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&autoplay=1&mute=1`;
-                iframe.setAttribute(
-                    "allow",
-                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                );
-                iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-                iframe.allowFullscreen = true;
-                shortEmbedRoot.appendChild(iframe);
+            const mountId = `short-yt-${shortId}`;
+            const mount = document.createElement("div");
+            mount.id = mountId;
+            mount.className = "shorts-yt-player-mount";
+            mount.setAttribute("title", "YouTube Short portfolio");
+            shortEmbedRoot.appendChild(mount);
+
+            const mountPlayer = () => {
+                new YT.Player(mountId, {
+                    host: "https://www.youtube-nocookie.com",
+                    videoId: shortId,
+                    width: "100%",
+                    height: "100%",
+                    playerVars: {
+                        ...youtubePlayerVarsBase(),
+                        autoplay: 0
+                    },
+                    events: {
+                        onReady: (ev) => setYoutubePlayerVolume(ev.target)
+                    }
+                });
             };
 
-            requestAnimationFrame(() => {
-                requestAnimationFrame(mountIframe);
-            });
+            whenYoutubeIframeApiReady(mountPlayer);
         });
     }
 
