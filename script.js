@@ -1,4 +1,20 @@
 // script.js
+/** Aceita ID de 11 caracteres, youtu.be/…, /shorts/…, /embed/… ou watch?v=… */
+function youtubeVideoIdFromDataShort(raw) {
+    if (!raw) return "";
+    const t = String(raw).trim();
+    let m = t.match(/youtu\.be\/([^?#&/]+)/i);
+    if (m) return m[1];
+    m = t.match(/youtube\.com\/shorts\/([^?#&/]+)/i);
+    if (m) return m[1];
+    m = t.match(/youtube\.com\/embed\/([^?#&/]+)/i);
+    if (m) return m[1];
+    m = t.match(/[?&]v=([^?#&]+)/);
+    if (m) return m[1];
+    if (/^[\w-]{11}$/.test(t)) return t;
+    return "";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const i18n = {
         en: {
@@ -39,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const shortEmbedRoot = document.querySelector(".shorts-video-container[data-short-id]");
     const shortLoadBtn = shortEmbedRoot?.querySelector(".short-video-load-btn");
-    const shortId = shortEmbedRoot?.dataset.shortId;
+    const shortId = youtubeVideoIdFromDataShort(shortEmbedRoot?.dataset.shortId);
     if (shortEmbedRoot && shortLoadBtn && shortId) {
         const poster = shortEmbedRoot.querySelector(".short-video-poster");
         if (poster) {
