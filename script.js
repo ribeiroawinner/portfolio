@@ -54,11 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         shortLoadBtn.addEventListener("click", () => {
             shortLoadBtn.remove();
             void shortEmbedRoot.offsetWidth;
-            const w = Math.max(1, Math.round(shortEmbedRoot.clientWidth));
-            const h = Math.max(1, Math.round(shortEmbedRoot.clientHeight));
+            const wrap = document.createElement("div");
+            wrap.className = "short-video-iframe-wrap";
             const iframe = document.createElement("iframe");
-            iframe.width = String(w);
-            iframe.height = String(h);
             iframe.title = "YouTube Short portfolio 1";
             iframe.loading = "eager";
             iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
@@ -68,7 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
             iframe.allowFullscreen = true;
-            shortEmbedRoot.appendChild(iframe);
+            wrap.appendChild(iframe);
+            shortEmbedRoot.appendChild(wrap);
         });
     }
 
