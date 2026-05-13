@@ -37,6 +37,41 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const shortEmbedRoot = document.querySelector(".short-video-embed[data-short-id]");
+    const shortLoadBtn = shortEmbedRoot?.querySelector(".short-video-load-btn");
+    const shortId = shortEmbedRoot?.dataset.shortId;
+    if (shortEmbedRoot && shortLoadBtn && shortId) {
+        const poster = shortEmbedRoot.querySelector(".short-video-poster");
+        if (poster) {
+            poster.addEventListener(
+                "error",
+                () => {
+                    poster.src = `https://i.ytimg.com/vi/${encodeURIComponent(shortId)}/hqdefault.jpg`;
+                },
+                { once: true }
+            );
+        }
+        shortLoadBtn.addEventListener("click", () => {
+            shortLoadBtn.remove();
+            void shortEmbedRoot.offsetWidth;
+            const w = Math.max(1, Math.round(shortEmbedRoot.clientWidth));
+            const h = Math.max(1, Math.round(shortEmbedRoot.clientHeight));
+            const iframe = document.createElement("iframe");
+            iframe.width = String(w);
+            iframe.height = String(h);
+            iframe.title = "YouTube Short portfolio 1";
+            iframe.loading = "eager";
+            iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(shortId)}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
+            iframe.setAttribute(
+                "allow",
+                "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            );
+            iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+            iframe.allowFullscreen = true;
+            shortEmbedRoot.appendChild(iframe);
+        });
+    }
+
     if (prefersReducedMotion) {
         document.querySelectorAll('[style*="opacity: 0"]').forEach((el) => {
             el.style.opacity = "1";
