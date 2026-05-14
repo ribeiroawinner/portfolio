@@ -50,18 +50,39 @@
                 <p class="hero-role" data-i18n="hero.role">Video editor for YouTubers!</p>
             </div>
             <div class="hero-videos" aria-label="Featured videos">
-                <div class="hero-video-card hero-video-embed" aria-label="Featured video 1">
-                    <div class="hero-yt-embed" id="hero-yt-embed-1" data-video-id="Y61BN0z-s1s" title="Featured portfolio video 1"></div>
+                <div class="hero-video-card hero-video-embed hero-yt-lazy" data-video-id="Y61BN0z-s1s" aria-label="Featured video 1">
+                    <button type="button" class="hero-video-load-btn" aria-label="Play featured portfolio video 1">
+                        <img class="hero-video-poster" src="https://i.ytimg.com/vi/Y61BN0z-s1s/maxresdefault.jpg" alt="" width="1280" height="720" decoding="async" />
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5V19L19 12L8 5Z"></path>
+                            </svg>
+                        </span>
+                    </button>
                 </div>
-                <div class="hero-video-card hero-video-embed" aria-label="Featured video 2">
-                    <div class="hero-yt-embed" id="hero-yt-embed-2" data-video-id="2oFuxgKb0uM" title="Featured portfolio video 2"></div>
+                <div class="hero-video-card hero-video-embed hero-yt-lazy" data-video-id="2oFuxgKb0uM" aria-label="Featured video 2">
+                    <button type="button" class="hero-video-load-btn" aria-label="Play featured portfolio video 2">
+                        <img class="hero-video-poster" src="https://i.ytimg.com/vi/2oFuxgKb0uM/maxresdefault.jpg" alt="" width="1280" height="720" decoding="async" />
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5V19L19 12L8 5Z"></path>
+                            </svg>
+                        </span>
+                    </button>
                 </div>
-                <div class="hero-video-card hero-video-embed" aria-label="Featured video 3">
-                    <div class="hero-yt-embed" id="hero-yt-embed-3" data-video-id="9vRZlZxAs00" title="Featured portfolio video 3"></div>
+                <div class="hero-video-card hero-video-embed hero-yt-lazy" data-video-id="9vRZlZxAs00" aria-label="Featured video 3">
+                    <button type="button" class="hero-video-load-btn" aria-label="Play featured portfolio video 3">
+                        <img class="hero-video-poster" src="https://i.ytimg.com/vi/9vRZlZxAs00/maxresdefault.jpg" alt="" width="1280" height="720" decoding="async" />
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5V19L19 12L8 5Z"></path>
+                            </svg>
+                        </span>
+                    </button>
                 </div>
                 <a class="hero-video-card" href="https://x.com/ribeiroawinner" target="_blank" rel="noopener noreferrer" aria-label="Open featured video 4">
                     <span class="hero-video-thumb hero-video-thumb-4">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -70,7 +91,7 @@
                 </a>
                 <a class="hero-video-card" href="https://ytjobs.co/talent/profile/407347?r=44" target="_blank" rel="noopener noreferrer" aria-label="Open featured video 5">
                     <span class="hero-video-thumb hero-video-thumb-5">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -79,7 +100,7 @@
                 </a>
                 <a class="hero-video-card" href="https://x.com/ribeiroawinner" target="_blank" rel="noopener noreferrer" aria-label="Open featured video 6">
                     <span class="hero-video-thumb hero-video-thumb-6">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -97,7 +118,7 @@
                 <div class="short-card shorts-video-container" data-short-id="https://www.youtube.com/shorts/D5EZoQTQ8Ng">
                     <button type="button" class="short-video-load-btn" aria-label="Play YouTube Short">
                         <img class="short-video-poster" src="https://i.ytimg.com/vi/D5EZoQTQ8Ng/maxresdefault.jpg" alt="" width="405" height="720" decoding="async" />
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -106,7 +127,7 @@
                 </div>
                 <a class="short-card" href="https://www.youtube.com/shorts/" target="_blank" rel="noopener noreferrer" aria-label="Open YouTube Short 2">
                     <span class="short-thumb">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -115,7 +136,7 @@
                 </a>
                 <a class="short-card" href="https://www.youtube.com/shorts/" target="_blank" rel="noopener noreferrer" aria-label="Open YouTube Short 3">
                     <span class="short-thumb">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -124,7 +145,7 @@
                 </a>
                 <a class="short-card" href="https://www.youtube.com/shorts/" target="_blank" rel="noopener noreferrer" aria-label="Open YouTube Short 4">
                     <span class="short-thumb">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>
@@ -133,7 +154,7 @@
                 </a>
                 <a class="short-card" href="https://www.youtube.com/shorts/" target="_blank" rel="noopener noreferrer" aria-label="Open YouTube Short 5">
                     <span class="short-thumb">
-                        <span class="play-button">
+                        <span class="play-button play-button--video-thumb" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8 5V19L19 12L8 5Z"></path>
                             </svg>

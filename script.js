@@ -44,20 +44,24 @@ function setYoutubePlayerVolume(player) {
     }
 }
 
-function initHeroYoutubePlayers() {
-    if (typeof YT === "undefined" || !YT.Player) return;
-    document.querySelectorAll(".hero-yt-embed[data-video-id]").forEach((el) => {
-        if (el.getAttribute("data-yt-inited") === "1") return;
-        const videoId = el.getAttribute("data-video-id");
-        const elId = el.id;
-        if (!videoId || !elId) return;
-        el.setAttribute("data-yt-inited", "1");
-        new YT.Player(elId, {
+function mountLazyYoutubePlayer(rootEl, videoId, mountId, mountClass, titleAttr) {
+    const mount = document.createElement("div");
+    mount.id = mountId;
+    mount.className = mountClass;
+    if (titleAttr) {
+        mount.setAttribute("title", titleAttr);
+    }
+    rootEl.appendChild(mount);
+    whenYoutubeIframeApiReady(() => {
+        new YT.Player(mountId, {
             host: "https://www.youtube-nocookie.com",
             videoId,
             width: "100%",
             height: "100%",
-            playerVars: youtubePlayerVarsBase(),
+            playerVars: {
+                ...youtubePlayerVarsBase(),
+                autoplay: 0
+            },
             events: {
                 onReady: (ev) => setYoutubePlayerVolume(ev.target)
             }
@@ -68,7 +72,6 @@ function initHeroYoutubePlayers() {
 const youtubeEmbedReadyQueue = [];
 
 function runYoutubeEmbedReadyCallbacks() {
-    initHeroYoutubePlayers();
     while (youtubeEmbedReadyQueue.length) {
         const fn = youtubeEmbedReadyQueue.shift();
         try {
@@ -94,10 +97,6 @@ window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof YT !== "undefined" && YT && YT.Player) {
-        initHeroYoutubePlayers();
-    }
-
     const i18n = {
         en: {
             "hero.role": "Video editor for YouTubers!",
@@ -152,33 +151,43 @@ document.addEventListener("DOMContentLoaded", () => {
         shortLoadBtn.addEventListener("click", () => {
             shortLoadBtn.remove();
             void shortEmbedRoot.offsetWidth;
-
-            const mountId = `short-yt-${shortId}`;
-            const mount = document.createElement("div");
-            mount.id = mountId;
-            mount.className = "shorts-yt-player-mount";
-            mount.setAttribute("title", "YouTube Short portfolio");
-            shortEmbedRoot.appendChild(mount);
-
-            const mountPlayer = () => {
-                new YT.Player(mountId, {
-                    host: "https://www.youtube-nocookie.com",
-                    videoId: shortId,
-                    width: "100%",
-                    height: "100%",
-                    playerVars: {
-                        ...youtubePlayerVarsBase(),
-                        autoplay: 0
-                    },
-                    events: {
-                        onReady: (ev) => setYoutubePlayerVolume(ev.target)
-                    }
-                });
-            };
-
-            whenYoutubeIframeApiReady(mountPlayer);
+            mountLazyYoutubePlayer(
+                shortEmbedRoot,
+                shortId,
+                `short-yt-${shortId}`,
+                "shorts-yt-player-mount",
+                "YouTube Short portfolio"
+            );
         });
     }
+
+    document.querySelectorAll(".hero-yt-lazy[data-video-id]").forEach((root) => {
+        const loadBtn = root.querySelector(".hero-video-load-btn");
+        const poster = root.querySelector(".hero-video-poster");
+        const videoId = root.getAttribute("data-video-id");
+        const normalizedId = youtubeVideoIdFromDataShort(videoId || "");
+        if (!loadBtn || !normalizedId) return;
+        if (poster) {
+            poster.addEventListener(
+                "error",
+                () => {
+                    poster.src = `https://i.ytimg.com/vi/${encodeURIComponent(normalizedId)}/hqdefault.jpg`;
+                },
+                { once: true }
+            );
+        }
+        loadBtn.addEventListener("click", () => {
+            loadBtn.remove();
+            void root.offsetWidth;
+            mountLazyYoutubePlayer(
+                root,
+                normalizedId,
+                `hero-yt-${normalizedId}`,
+                "hero-yt-player-mount",
+                "Featured portfolio video"
+            );
+        });
+    });
 
     if (prefersReducedMotion) {
         document.querySelectorAll('[style*="opacity: 0"]').forEach((el) => {
