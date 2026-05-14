@@ -15,22 +15,42 @@ function youtubeVideoIdFromDataShort(raw) {
     return "";
 }
 
+/** Query para forçar nova miniatura depois de alterar a capa no YouTube (cache CDN + browser). */
+function getYoutubeThumbCacheQuery() {
+    if (typeof document === "undefined") return "";
+    const raw = document.documentElement.getAttribute("data-yt-thumb-cache");
+    if (raw == null || raw === "") return "";
+    return `?ytcb=${encodeURIComponent(raw)}`;
+}
+
+/** Aplica o bust às capas estáticas do HTML (uma versão em data-yt-thumb-cache). */
+function applyYoutubeThumbBustToPosterImgs() {
+    const q = getYoutubeThumbCacheQuery();
+    if (!q) return;
+    document.querySelectorAll("img.hero-video-poster, img.short-video-poster").forEach((img) => {
+        const src = img.getAttribute("src");
+        if (!src || !src.includes("i.ytimg.com/vi/")) return;
+        img.src = `${src.split("?")[0]}${q}`;
+    });
+}
+
 /** Miniatura: tenta a melhor resolução; se maxres for placeholder (~120px) ou falhar, desce de tier. */
 function bindYoutubePosterBestEffort(img, videoId, verticalShort) {
     if (!img || !videoId) return;
     if (img.getAttribute("data-yt-poster-bound") === "1") return;
     img.setAttribute("data-yt-poster-bound", "1");
     const id = encodeURIComponent(videoId);
+    const q = getYoutubeThumbCacheQuery();
     const landscapeTiers = [
-        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
-        `https://i.ytimg.com/vi/${id}/sddefault.jpg`,
-        `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg${q}`,
+        `https://i.ytimg.com/vi/${id}/sddefault.jpg${q}`,
+        `https://i.ytimg.com/vi/${id}/hqdefault.jpg${q}`
     ];
     const shortTiers = [
-        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
-        `https://i.ytimg.com/vi/${id}/hq720.jpg`,
-        `https://i.ytimg.com/vi/${id}/sddefault.jpg`,
-        `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg${q}`,
+        `https://i.ytimg.com/vi/${id}/hq720.jpg${q}`,
+        `https://i.ytimg.com/vi/${id}/sddefault.jpg${q}`,
+        `https://i.ytimg.com/vi/${id}/hqdefault.jpg${q}`
     ];
     const tiers = verticalShort ? shortTiers : landscapeTiers;
     let tierIndex = 0;
@@ -163,6 +183,8 @@ window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    applyYoutubeThumbBustToPosterImgs();
+
     const i18n = {
         en: {
             "hero.role": "Video editor for YouTubers!",
