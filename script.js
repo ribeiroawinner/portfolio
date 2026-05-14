@@ -15,6 +15,49 @@ function youtubeVideoIdFromDataShort(raw) {
     return "";
 }
 
+/** Miniatura: tenta a melhor resolução; se maxres for placeholder (~120px) ou falhar, desce de tier. */
+function bindYoutubePosterBestEffort(img, videoId, verticalShort) {
+    if (!img || !videoId) return;
+    if (img.getAttribute("data-yt-poster-bound") === "1") return;
+    img.setAttribute("data-yt-poster-bound", "1");
+    const id = encodeURIComponent(videoId);
+    const landscapeTiers = [
+        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+        `https://i.ytimg.com/vi/${id}/sddefault.jpg`,
+        `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+    ];
+    const shortTiers = [
+        `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+        `https://i.ytimg.com/vi/${id}/hq720.jpg`,
+        `https://i.ytimg.com/vi/${id}/sddefault.jpg`,
+        `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+    ];
+    const tiers = verticalShort ? shortTiers : landscapeTiers;
+    let tierIndex = 0;
+
+    const goTier = (next) => {
+        tierIndex = next;
+        if (tierIndex < tiers.length) {
+            img.src = tiers[tierIndex];
+        }
+    };
+
+    img.addEventListener("error", () => {
+        goTier(tierIndex + 1);
+    });
+
+    img.addEventListener("load", () => {
+        if (img.naturalWidth <= 128 && tierIndex < tiers.length - 1) {
+            goTier(tierIndex + 1);
+        }
+    });
+
+    goTier(0);
+    if (img.complete && img.naturalWidth <= 128 && tierIndex < tiers.length - 1) {
+        goTier(tierIndex + 1);
+    }
+}
+
 /** Volume inicial (0–100); só funciona via IFrame API, não por parâmetros da URL. */
 const YT_EMBED_VOLUME = 50;
 
@@ -163,13 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (shortEmbedRoot && shortLoadBtn && shortId) {
         const poster = shortEmbedRoot.querySelector(".short-video-poster");
         if (poster) {
-            poster.addEventListener(
-                "error",
-                () => {
-                    poster.src = `https://i.ytimg.com/vi/${encodeURIComponent(shortId)}/hqdefault.jpg`;
-                },
-                { once: true }
-            );
+            bindYoutubePosterBestEffort(poster, shortId, true);
         }
         shortLoadBtn.addEventListener("click", () => {
             shortLoadBtn.remove();
@@ -191,13 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const normalizedId = youtubeVideoIdFromDataShort(videoId || "");
         if (!loadBtn || !normalizedId) return;
         if (poster) {
-            poster.addEventListener(
-                "error",
-                () => {
-                    poster.src = `https://i.ytimg.com/vi/${encodeURIComponent(normalizedId)}/hqdefault.jpg`;
-                },
-                { once: true }
-            );
+            bindYoutubePosterBestEffort(poster, normalizedId, false);
         }
         loadBtn.addEventListener("click", () => {
             loadBtn.remove();
