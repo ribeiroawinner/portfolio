@@ -52,7 +52,8 @@ function mountLazyYoutubePlayer(rootEl, videoId, mountId, mountClass, titleAttr)
         mount.setAttribute("title", titleAttr);
     }
     rootEl.appendChild(mount);
-    whenYoutubeIframeApiReady(() => {
+
+    const createPlayer = () => {
         new YT.Player(mountId, {
             host: "https://www.youtube-nocookie.com",
             videoId,
@@ -60,13 +61,35 @@ function mountLazyYoutubePlayer(rootEl, videoId, mountId, mountClass, titleAttr)
             height: "100%",
             playerVars: {
                 ...youtubePlayerVarsBase(),
-                autoplay: 0
+                autoplay: 1,
+                mute: 1
             },
             events: {
-                onReady: (ev) => setYoutubePlayerVolume(ev.target)
+                onReady: (ev) => {
+                    const p = ev.target;
+                    setYoutubePlayerVolume(p);
+                    try {
+                        p.playVideo();
+                    } catch (_) {
+                        /* ignore */
+                    }
+                    requestAnimationFrame(() => {
+                        try {
+                            p.unMute();
+                        } catch (_) {
+                            /* alguns browsers só deixam som após interação no próprio player */
+                        }
+                    });
+                }
             }
         });
-    });
+    };
+
+    if (typeof YT !== "undefined" && YT && YT.Player) {
+        createPlayer();
+    } else {
+        whenYoutubeIframeApiReady(createPlayer);
+    }
 }
 
 const youtubeEmbedReadyQueue = [];
