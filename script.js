@@ -107,6 +107,79 @@ function setYoutubePlayerVolume(player) {
     }
 }
 
+/**
+ * Shorts no mobile: se o YT.Player só for criado depois do load da IFrame API,
+ * o gesto do utilizador já expirou e o Safari/Android pedem 2º toque.
+ * Com API pronta → YT.Player; senão → iframe com autoplay no mesmo stack do toque.
+ */
+function mountShortEmbedOneTap(rootEl, videoId, slotIndex) {
+    const mount = document.createElement("div");
+    mount.className = "shorts-yt-player-mount";
+    mount.setAttribute("title", "YouTube Short");
+    rootEl.appendChild(mount);
+
+    const mountId = `short-yt-${videoId}-${slotIndex}`;
+    const apiReady = typeof YT !== "undefined" && YT && YT.Player;
+
+    if (apiReady) {
+        mount.id = mountId;
+        new YT.Player(mountId, {
+            host: "https://www.youtube-nocookie.com",
+            videoId,
+            width: "100%",
+            height: "100%",
+            playerVars: {
+                ...youtubePlayerVarsBase(),
+                autoplay: 1,
+                mute: 1
+            },
+            events: {
+                onReady: (ev) => {
+                    const p = ev.target;
+                    setYoutubePlayerVolume(p);
+                    try {
+                        p.playVideo();
+                    } catch (_) {
+                        /* ignore */
+                    }
+                    requestAnimationFrame(() => {
+                        try {
+                            p.unMute();
+                        } catch (_) {
+                            /* alguns browsers só deixam som após interação no próprio player */
+                        }
+                    });
+                }
+            }
+        });
+        return;
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.title = "YouTube Short";
+    iframe.loading = "eager";
+    iframe.setAttribute(
+        "allow",
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    );
+    iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    iframe.allowFullscreen = true;
+    const params = new URLSearchParams({
+        rel: "0",
+        modestbranding: "1",
+        playsinline: "1",
+        autoplay: "1",
+        mute: "1",
+        iv_load_policy: "3",
+        enablejsapi: "1"
+    });
+    if (typeof location !== "undefined" && location.origin && location.protocol !== "file:") {
+        params.set("origin", location.origin);
+    }
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?${params.toString()}`;
+    mount.appendChild(iframe);
+}
+
 function mountLazyYoutubePlayer(rootEl, videoId, mountId, mountClass, titleAttr) {
     const mount = document.createElement("div");
     mount.id = mountId;
@@ -182,7 +255,15 @@ window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
     runYoutubeEmbedReadyCallbacks();
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+function ensureYoutubeIframeApiScript() {
+    if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
+    const s = document.createElement("script");
+    s.src = "https://www.youtube.com/iframe_api";
+    s.async = true;
+    (document.head || document.documentElement).appendChild(s);
+}
+
+ensureYoutubeIframeApiScript();
     applyYoutubeThumbBustToPosterImgs();
 
     const i18n = {
@@ -222,10 +303,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const shortEmbedRoot = document.querySelector(".shorts-video-container[data-short-id]");
-    const shortLoadBtn = shortEmbedRoot?.querySelector(".short-video-load-btn");
-    const shortId = youtubeVideoIdFromDataShort(shortEmbedRoot?.dataset.shortId);
-    if (shortEmbedRoot && shortLoadBtn && shortId) {
+    document.querySelectorAll(".shorts-video-container[data-short-id]").forEach((shortEmbedRoot, slotIndex) => {
+        const shortLoadBtn = shortEmbedRoot.querySelector(".short-video-load-btn");
+        const shortId = youtubeVideoIdFromDataShort(shortEmbedRoot.dataset.shortId);
+        if (!shortEmbedRoot || !shortLoadBtn || !shortId) return;
         const poster = shortEmbedRoot.querySelector(".short-video-poster");
         if (poster) {
             bindYoutubePosterBestEffort(poster, shortId, true);
@@ -233,15 +314,9 @@ document.addEventListener("DOMContentLoaded", () => {
         shortLoadBtn.addEventListener("click", () => {
             shortLoadBtn.remove();
             void shortEmbedRoot.offsetWidth;
-            mountLazyYoutubePlayer(
-                shortEmbedRoot,
-                shortId,
-                `short-yt-${shortId}`,
-                "shorts-yt-player-mount",
-                "YouTube Short portfolio"
-            );
+            mountShortEmbedOneTap(shortEmbedRoot, shortId, slotIndex);
         });
-    }
+    });
 
     document.querySelectorAll(".hero-yt-lazy[data-video-id]").forEach((root) => {
         const loadBtn = root.querySelector(".hero-video-load-btn");
